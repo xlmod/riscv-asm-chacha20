@@ -1,0 +1,3 @@
+[submodule "src/getoption"]
+	path = src/getoption
+	url = git@github.com:xlmod/getoption.git
