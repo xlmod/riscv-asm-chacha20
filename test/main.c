@@ -3,9 +3,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/random.h>
-
-#include <getoption/getoption.h>
 
 #include <crypto.h>
 
@@ -22,22 +21,22 @@ void print_hex(char *name, uint8_t *h, uint64_t len) {
 }
 
 int main(int argc, char **argv) {
-	int ret;
-	for (;;) {
-		int c = getoption(argc, argv, "e");
-		if (c < 0)
-			break;
-		switch (c) {
-			default:
-				return 1;
-		}
-	}
-	if (optionind == argc)
+	if (argc != 2)
 		return 1;
 	uint8_t key[CRYPTO_KEYSIZE];
 	uint8_t nonce[CRYPTO_NONCESIZE];
-	uint8_t *in = (uint8_t *)argv[optionind];
-	uint64_t len = strlen((char *)in);
+	uint8_t buf[64] = {
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+	};
+	uint8_t *in = (uint8_t *)buf;
+	uint64_t len = 64;
 	uint8_t *out = calloc(len, 1);
 	
 	// Random
@@ -56,5 +55,5 @@ int main(int argc, char **argv) {
 
 	print_hex("decrypted", out, len);
 
-	return 0;
+	exit(0);
 }
